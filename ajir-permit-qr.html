@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>التحقق من تصريح أجير وبيانات العاملين</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%232f9e64' d='M12 2l8 3v6c0 5-3.4 9.4-8 11-4.6-1.6-8-6-8-11V5l8-3z'/%3E%3Cpath fill='none' stroke='%23fff' stroke-width='2' d='M8.5 12.2l2.4 2.4 4.6-4.8'/%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+.r-wrap{background:#eceef0;font-family:"Tajawal","Segoe UI",Tahoma,Arial,sans-serif;color:#1c2430;padding-bottom:34px}
+.r-top{background:#fff;border-bottom:1px solid #d5dde1}
+.r-top .in{max-width:1020px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:10px 16px}
+.r-top img{height:40px;width:auto}
+.r-note{max-width:1020px;margin:12px auto 0;padding:9px 14px;font-size:13.5px;line-height:1.8;color:#7a5b10;background:#fff8e8;border:1px solid #f0d98a;border-radius:9px}
+.r-card{max-width:1020px;margin:14px auto 0;background:#fff;border:1px solid #d5dde1;border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(20,40,60,.06)}
+.r-hd{display:grid;grid-template-columns:1fr 1.4fr 1fr;border-bottom:1px solid #d5dde1}
+.r-hd>div{border:1px solid #d5dde1;padding:14px 16px;display:flex;align-items:center;justify-content:center;min-height:84px;gap:12px;flex-wrap:wrap}
+.r-hd img{height:44px;width:auto}
+.r-title{font-size:24px;font-weight:800;color:#222a55;text-align:center}
+.r-status{font-size:17px;font-weight:800;text-align:center}
+.r-ok{color:#1f7d4c}.r-bad{color:#c0392b}.r-warn{color:#b97a12}.r-none{color:#5b6b76}
+.r-scan-row{display:flex;justify-content:center;align-items:center;gap:12px;flex-wrap:wrap;padding:20px 22px 8px}
+.r-scanbtn{min-height:50px;padding:12px 26px;border-radius:10px;font-family:inherit;font-size:16px;font-weight:800;cursor:pointer;background:#222a55;color:#fff;border:1px solid #222a55;display:inline-flex;align-items:center;gap:9px}
+.r-scanbtn:hover{background:#1a2142}
+.r-scanbtn svg{width:21px;height:21px}
+.r-msg{display:flex;align-items:center;justify-content:center;gap:9px;padding:14px 20px 8px;font-size:16px;font-weight:700;flex-wrap:wrap;text-align:center}
+.r-msg svg{width:23px;height:23px;flex:none}
+.r-tbls{overflow-x:auto;padding:14px 22px 22px}
+.r-data{width:100%;border-collapse:collapse;table-layout:fixed;min-width:640px;margin-bottom:14px}
+.r-data td{border:1px solid #d5dde1;padding:11px 14px;font-size:15px}
+.r-data tr.band td{background:#e6eef1;text-align:center;font-weight:800;color:#222a55;font-size:16px;padding:10px}
+.r-data td.l{background:#e9f0f3;color:#5b6b76;font-weight:500;width:28%}
+.r-data td.v{background:#fff;font-weight:700;word-break:break-word}
+.r-admin{padding:22px}
+.r-h3{font-size:20px;font-weight:800;color:#222a55;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.r-alert{font-size:13px;font-weight:700;color:#1f7d4c;padding:8px 12px;border-radius:8px;background:rgba(47,158,100,.12);margin-bottom:12px;display:none}
+.r-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 16px}
+.r-fld{display:flex;flex-direction:column;gap:5px}
+.r-fld label{font-size:13px;font-weight:700;color:#222a55}
+.r-fld input,.r-fld select{min-height:42px;border:1px solid #d5dde1;border-radius:8px;padding:7px 11px;font-family:inherit;font-size:14px;background:#fbfcfd;width:100%}
+.r-sec{font-weight:800;color:#222a55;font-size:15px;border-right:4px solid #2f9e64;padding:2px 9px;margin:14px 0 10px}
+.r-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.r-btn{min-height:44px;padding:9px 20px;border-radius:9px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;background:#2f9e64;color:#fff;border:1px solid #2f9e64}
+.r-secbtn{min-height:42px;padding:8px 18px;border-radius:9px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;background:#fff;color:#222a55;border:1px solid #d5dde1}
+.r-list{width:100%;border-collapse:collapse;min-width:720px;margin-top:12px}
+.r-list th,.r-list td{border:1px solid #d5dde1;padding:9px 11px;font-size:13px;text-align:right}
+.r-list th{background:#e6eef1;color:#222a55;font-weight:800}
+.r-del{min-height:34px;padding:4px 12px;border-radius:8px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;background:#fff;color:#c0392b;border:1px solid #c0392b}
+.r-bcbtn{min-height:34px;padding:4px 12px;border-radius:8px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;background:#fff;color:#222a55;border:1px solid #222a55;display:inline-flex;align-items:center;gap:6px}
+.r-bcbtn svg{width:14px;height:14px}
+.r-pill{display:inline-block;padding:2px 11px;border-radius:20px;font-size:12px;font-weight:700;border:1px solid #2f9e64;background:rgba(47,158,100,.13);color:#1f7d4c;white-space:nowrap}
+.r-pill.bad{border-color:#c0392b;background:rgba(192,57,43,.10);color:#c0392b}
+.r-pill.warn{border-color:#b97a12;background:rgba(185,122,18,.12);color:#b97a12}
+.r-foot{background:#fff;border-top:1px solid #d5dde1;margin-top:10px}
+.r-fcols{max-width:1020px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:18px;padding:24px 18px 12px}
+.r-fcols h4{color:#222a55;font-size:15px;font-weight:800;margin-bottom:8px}
+.r-fcols a{display:block;color:#5b6b76;font-size:13px;padding:3px 0}
+.r-fl{max-width:1020px;margin:0 auto;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:14px 18px 24px;border-top:1px solid #d5dde1}
+.r-fl>img{height:38px;width:auto;object-fit:contain}
+.r-fl>img.govt{height:44px}
+.r-taka{background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px;font-family:inherit}
+.r-taka img{height:38px;width:auto;object-fit:contain}
+.r-taka span{font-size:11px;color:#5b6b76;font-weight:500}
+.r-taka:hover span{color:#222a55;font-weight:700}
+.r-fab{position:absolute;left:18px;bottom:18px;width:54px;height:54px;border-radius:50%;background:#2f9e64;border:none;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(31,125,76,.35);cursor:pointer;z-index:20}
+.r-fab svg{width:26px;height:26px;color:#fff}
+.r-relative{position:relative}
+.r-hidden{display:none!important}
+.chat-panel{position:absolute;left:14px;bottom:84px;width:352px;max-width:calc(100% - 28px);background:#fff;border:1px solid #d5dde1;border-radius:16px;box-shadow:0 14px 40px rgba(20,40,60,.22);display:flex;flex-direction:column;overflow:hidden;z-index:30}
+.chat-head{display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid #d5dde1}
+.chat-head-badge{width:42px;height:42px;border-radius:50%;background:#2f9e64;display:flex;align-items:center;justify-content:center;color:#fff;flex:none}
+.chat-head-badge svg{width:22px;height:22px}
+.chat-title{flex:1;text-align:center;font-weight:800;color:#222a55;font-size:14px;white-space:nowrap;padding:0 6px}
+.chat-icon-btn{width:30px;height:30px;border-radius:50%;background:#222a55;color:#fff;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none}
+.chat-icon-btn svg{width:13px;height:13px}
+.chat-body{padding:14px;overflow-y:auto;max-height:320px;display:flex;flex-direction:column;gap:12px}
+.msg-row{display:flex;flex-direction:column;gap:3px;max-width:88%}
+.bot-bubble{background:#f6f8f9;border:1px solid #d5dde1;border-radius:14px 14px 4px 14px;padding:10px 13px;font-size:14px;line-height:1.7}
+.user-bubble{background:#e3f2ea;border-radius:14px 14px 14px 4px;padding:10px 13px;font-size:14px;line-height:1.7;align-self:flex-start}
+.msg-time{font-size:12px;color:#5b6b76}
+.typing{display:flex;gap:5px;align-items:center;height:22px}
+.typing span{width:8px;height:8px;border-radius:50%}
+.typing span:nth-child(1){background:#c0392b}.typing span:nth-child(2){background:#9aa5ad}.typing span:nth-child(3){background:#f08a24}.typing span:nth-child(4){background:#2f9e64}
+.qcards{display:flex;gap:10px;flex-wrap:wrap}
+.qcard{flex:1;min-width:140px;background:#fff;border:1px solid #d5dde1;border-radius:14px;padding:14px 12px;text-align:center;cursor:pointer}
+.qcard svg{width:30px;height:30px;color:#222a55;margin:0 auto 8px}
+.qcard .ql{font-size:13px;font-weight:700;color:#222a55;line-height:1.5}
+.chat-input{display:flex;align-items:center;gap:8px;padding:10px 12px;border-top:1px solid #d5dde1}
+.chat-input input{flex:1;min-height:40px;border:1px solid #d5dde1;border-radius:10px;padding:7px 12px;font-family:inherit;font-size:14px;background:#fbfcfd}
+.chat-input button{background:none;border:none;cursor:pointer;color:#222a55;display:flex;align-items:center;justify-content:center;padding:6px}
+.chat-input svg{width:20px;height:20px}
+.modal-overlay{position:fixed;inset:0;background:rgba(20,40,60,.48);display:flex;align-items:center;justify-content:center;z-index:60;padding:16px}
+.modal-box{background:#fff;border-radius:14px;max-width:600px;width:100%;max-height:92vh;overflow:auto;box-shadow:0 18px 50px rgba(0,0,0,.32)}
+.modal-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid #d5dde1;font-weight:800;color:#222a55;font-size:16px}
+.modal-close{width:32px;height:32px;border-radius:50%;background:#f0f3f5;border:none;color:#222a55;cursor:pointer;display:flex;align-items:center;justify-content:center;flex:none}
+.modal-close svg{width:15px;height:15px}
+.modal-body{padding:16px 18px}
+.bc-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.bc-item{border:1px solid #d5dde1;border-radius:10px;padding:14px 12px;text-align:center;background:#fbfcfd}
+.bc-item h5{margin:0 0 10px;font-size:13px;color:#5b6b76;font-weight:700}
+.bc-item .bc-canvas{display:flex;justify-content:center;background:#fff;border:1px solid #e3e9ec;border-radius:8px;padding:8px;min-height:180px;align-items:center}
+.bc-item svg{max-width:100%}
+#qr-code{display:flex;align-items:center;justify-content:center;min-height:168px}
+#qr-code svg{max-width:210px;height:auto;display:block}
+#bc-barcode{max-width:100%}
+.bc-summary{margin-top:16px}
+.bc-summary .r-data{min-width:0}
+.bc-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:16px}
+#scan-region{width:100%;max-width:430px;margin:0 auto;border-radius:10px;overflow:hidden;background:#10171c}
+.scan-status{text-align:center;font-size:14px;font-weight:700;color:#222a55;padding:12px 6px 4px}
+.scan-status.err{color:#c0392b}
+.scan-hint{text-align:center;font-size:12.5px;color:#5b6b76;padding:4px 6px 10px;line-height:1.7}
+.scan-file{display:none}
+@media(max-width:760px){.r-hd{grid-template-columns:1fr}.r-fcols{grid-template-columns:1fr 1fr}.r-grid{grid-template-columns:1fr}.r-title{font-size:20px}.chat-panel{width:calc(100% - 28px)}.bc-grid{grid-template-columns:1fr}}
+@media print{body *{visibility:hidden}#bc-modal,#bc-modal *{visibility:visible}#bc-modal{position:absolute;inset:0;max-height:none}#bc-modal .modal-actions{display:none}}
+</style>
+</head>
+<body>
+<div class="r-wrap">
+  <div class="r-top"><div class="in">
+    <img src="https://p16-flow-image-sign.ibyteimg.com/tos-mya-i-uo7y4d541q/09aa4e9999e141b6bbddb6592667e931.png~tplv-0es2k971ck-image.image?rcl=202611221929524F754A151A30F15CB1BD&rk3s=8e244e95&rrcfp=935dee89&x-expires=1795951793&x-signature=3%2BI5AnRCD5GQCX3UMXDobl2hTiY%3D" onerror="this.style.display='none'" alt="">
+    <img src="https://p16-flow-image-sign.ibyteimg.com/tos-mya-i-uo7y4d541q/7e57021519e74d9c894d7087c72a78e7.png~tplv-0es2k971ck-image.image?rcl=202611221929524F754A151A30F15CB1BD&rk3s=8e244e95&rrcfp=935dee89&x-expires=1795951793&x-signature=sLq4eIxTAOfE6Azx5WeUEqbLsic%3D" onerror="this.style.display='none'" alt="أجير">
+  </div></div>
+  <div class="r-note">امسح رمز QR الخاص بالتصريح بالكاميرا ليفتح الصفحة وتظهر بيانات العامل والتصريح كاملة. ولإدخال بيانات العاملين والتصاريح ورفعها عبر الموقع وتوليد رمز QR، اضغط شعار تكامل في الأسفل.</div>
+
+  <div class="r-relative">
+  <div class="r-card" id="r-public">
+    <div class="r-hd">
+      <div><img src="https://p16-flow-image-sign.ibyteimg.com/tos-mya-i-uo7y4d541q/09aa4e9999e141b6bbddb6592667e931.png~tplv-0es2k971ck-image.image?rcl=202611221929524F754A151A30F15CB1BD&rk3s=8e244e95&rrcfp=935dee89&x-expires=1795951793&x-signature=3%2BI5AnRCD5GQCX3UMXDobl2hTiY%3D" onerror="this.style.display='none'" alt=""><img src="https://p16-flow-image-sign.ibyteimg.com/tos-mya-i-uo7y4d541q/7e57021519e74d9c894d7087c72a78e7.png~tplv-0es2k971ck-image.image?rcl=202611221929524F754A151A30F15CB1BD&rk3s=8e244e95&rrcfp=935dee89&x-expires=1795951793&x-signature=sLq4eIxTAOfE6Azx5WeUEqbLsic%3D" onerror="this.style.display='none'" alt=""></div>
+      <div class="r-title">التحقق من تصريح أجير</div>
+      <div class="r-status r-none" id="r-hstatus">—</div>
+    </div>
+    <div class="r-scan-row r-hidden">
+      <button class="r-scanbtn" id="r-scan" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/><path d="M4 12h16"/></svg>
+        مسح رمز QR لعرض بيانات العامل
+      </button>
+    </div>
+    <div class="r-msg" id="r-msg"></div>
+    <div class="r-tbls" id="r-tables">
+      <table class="r-data">
+        <tr class="band"><td colspan="4">بيانات التصريح</td></tr>
+        <tr><td class="l">رقم التصريح</td><td class="v" id="r-permitNo"></td><td class="l">نوع التصريح</td><td class="v" id="r-permitType"></td></tr>
+        <tr><td class="l">تاريخ بداية التصريح</td><td class="v" id="r-startDate"></td><td class="l">تاريخ نهاية التصريح</td><td class="v" id="r-endDate"></td></tr>
+      </table>
+      <table class="r-data">
+        <tr class="band"><td colspan="4">بيانات العامل</td></tr>
+        <tr><td class="l">اسم العامل</td><td class="v" id="r-workerName"></td><td class="l">رقم الهوية / الإقامة</td><td class="v" id="r-workerId"></td></tr>
+        <tr><td class="l">الجنسية</td><td class="v" id="r-nationality"></td><td class="l">المهنة</td><td class="v" id="r-occupation"></td></tr>
+        <tr><td class="l">الجنس</td><td class="v" id="r-gender"></td><td class="l">تاريخ الميلاد</td><td class="v" id="r-birthDate"></td></tr>
+      </table>
+      <table class="r-data">
+        <tr class="band"><td colspan="4">بيانات المنشأة</td></tr>
+        <tr><td class="l">رقم المنشأة</td><td class="v" id="r-estNo"></td><td class="l">اسم المنشأة</td><td class="v" id="r-estName"></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="r-card r-admin r-hidden" id="r-admin">
+    <div class="r-h3">رفع وإدارة بيانات العاملين والتصاريح<button class="r-secbtn" id="r-back" type="button">عودة للصفحة العامة</button></div>
+    <div class="r-alert" id="r-alert"></div>
+    <form id="r-form">
+      <div class="r-sec">بيانات التصريح</div>
+      <div class="r-grid">
+        <div class="r-fld"><label>رقم التصريح *</label><input id="a-permitNo" dir="ltr" placeholder="TQ6193888"></div>
+        <div class="r-fld"><label>نوع التصريح</label><select id="a-permitType"><option>تصريح تعاقد أجير</option><option>تصريح عمل مؤقت</option><option>تصريح إعارة</option><option>تصريح موسمي</option></select></div>
+        <div class="r-fld"><label>تاريخ البداية *</label><input type="date" id="a-startDate"></div>
+        <div class="r-fld"><label>تاريخ النهاية *</label><input type="date" id="a-endDate"></div>
+      </div>
+      <div class="r-sec">بيانات العامل</div>
+      <div class="r-grid">
+        <div class="r-fld"><label>اسم العامل *</label><input id="a-workerName" dir="ltr"></div>
+        <div class="r-fld"><label>رقم الهوية / الإقامة *</label><input id="a-workerId" dir="ltr"></div>
+        <div class="r-fld"><label>الجنسية</label><input id="a-nationality"></div>
+        <div class="r-fld"><label>المهنة</label><input id="a-occupation"></div>
+        <div class="r-fld"><label>الجنس</label><select id="a-gender"><option>ذكر</option><option>أنثى</option></select></div>
+      </div>
+      <div class="r-sec">بيانات المنشأة</div>
+      <div class="r-grid">
+        <div class="r-fld"><label>رقم المنشأة</label><input id="a-estNo" dir="ltr"></div>
+        <div class="r-fld"><label>اسم المنشأة</label><input id="a-estName"></div>
+      </div>
+      <div class="r-actions"><button class="r-btn" type="submit">حفظ البيانات ورفعها وتوليد رمز QR</button></div>
+    </form>
+    <div style="overflow-x:auto">
+      <table class="r-list">
+        <thead><tr><th>رقم التصريح</th><th>اسم العامل</th><th>المنشأة</th><th>البداية</th><th>النهاية</th><th>الحالة</th><th>الكود</th><th>إجراء</th></tr></thead>
+        <tbody id="r-list"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <button class="r-fab" type="button" aria-label="المساعد"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></button>
+
+  <div class="chat-panel r-hidden" id="chat-panel">
+    <div class="chat-head">
+      <button class="chat-icon-btn" id="chat-home" type="button" title="الرئيسية"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg></button>
+      <button class="chat-icon-btn" id="chat-min" type="button" title="تصغير"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14"/></svg></button>
+      <button class="chat-icon-btn" id="chat-close" type="button" title="إغلاق"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      <div class="chat-title">مساعدك الافتراضي من أجير</div>
+      <div class="chat-head-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></div>
+    </div>
+    <div class="chat-body" id="chat-body">
+      <div class="typing" id="typing" style="display:none"><span></span><span></span><span></span><span></span></div>
+      <div class="msg-row"><div class="bot-bubble">مرحبًا أنا مساعدك الافتراضي من أجير. يسرني خدمتك والإجابة عن استفساراتك.</div><div class="msg-time">03:11 -bot</div></div>
+      <div class="msg-row"><div class="bot-bubble">يرجى اختيار إحدى خدماتنا ليتم الإجابة على جميع استفساراتك.</div><div class="msg-time">03:11 -bot</div></div>
+      <div class="qcards" id="qcards">
+        <div class="qcard" data-label="تعاقد أجير"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3"/><path d="M3.8 19c.6-3 2.5-4.5 5.2-4.5s4.6 1.5 5.2 4.5"/><circle cx="17" cy="9" r="2.5"/><path d="M15.6 14.8c1.8.2 3.1 1.4 3.6 3.8"/></svg><div class="ql">تعاقد أجير</div></div>
+        <div class="qcard" data-label="خدمة التعاقد مع القوى العاملة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4"/><path d="M9.2 12.4h5.6M9.2 15.4h5.6M9.2 18.2h3.4"/><path d="M15.6 17.6l1.8 1.8 2.8-3.6"/></svg><div class="ql">خدمة التعاقد مع القوى العاملة</div></div>
+      </div>
+    </div>
+    <div class="chat-input">
+      <button type="button" title="مرفق"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 10.5l-8.5 8.5a4 4 0 0 1-5.7-5.7l8.5-8.5a2.7 2.7 0 0 1 3.8 3.8l-8.5 8.5a1.35 1.35 0 0 1-1.9-1.9l7.8-7.8"/></svg></button>
+      <button type="button" title="المزيد"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="19" cy="12" r="1.7"/></svg></button>
+      <input id="chat-input" type="text" placeholder="اكتب رسالتك هنا">
+      <button type="button" id="chat-send" title="إرسال"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
+    </div>
+  </div>
+
+  <!-- نافذة الباركود / رمز QR -->
+  <div class="modal-overlay r-hidden" id="bc-modal">
+    <div class="modal-box" role="dialog" aria-modal="true" aria-label="باركود التصريح">
+      <div class="modal-head">
+        <span id="bc-title">باركود التصريح</span>
+        <button class="modal-close" id="bc-close" type="button" aria-label="إغلاق"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      </div>
+      <div class="modal-body">
+        <div class="bc-grid">
+          <div class="bc-item">
+            <h5>رمز QR (مسحه بالكاميرا يفتح الصفحة ويعرض بيانات العامل)</h5>
+            <div class="bc-canvas" id="qr-code"></div>
+          </div>
+          <div class="bc-item">
+            <h5>الباركود التقليدي Code 128</h5>
+            <div class="bc-canvas"><svg id="bc-barcode" style="width:100%;height:180px"></svg></div>
+          </div>
+        </div>
+        <div class="bc-summary">
+          <table class="r-data">
+            <tr class="band"><td colspan="4">بيانات التصريح الكاملة</td></tr>
+            <tr><td class="l">رقم التصريح</td><td class="v" id="s-permitNo"></td><td class="l">نوع التصريح</td><td class="v" id="s-permitType"></td></tr>
+            <tr><td class="l">تاريخ البداية</td><td class="v" id="s-startDate"></td><td class="l">تاريخ النهاية</td><td class="v" id="s-endDate"></td></tr>
+            <tr><td class="l">اسم العامل</td><td class="v" id="s-workerName"></td><td class="l">رقم الهوية / الإقامة</td><td class="v" id="s-workerId"></td></tr>
+            <tr><td class="l">الجنسية</td><td class="v" id="s-nationality"></td><td class="l">المهنة</td><td class="v" id="s-occupation"></td></tr>
+            <tr><td class="l">الجنس</td><td class="v" id="s-gender"></td><td class="l">رقم المنشأة</td><td class="v" id="s-estNo"></td></tr>
+            <tr><td class="l">اسم المنشأة</td><td class="v" id="s-estName" colspan="3"></td></tr>
+          </table>
+        </div>
+        <div class="bc-actions modal-actions">
+          <button class="r-btn" id="bc-dl-qr" type="button">تنزيل رمز QR</button>
+          <button class="r-secbtn" id="bc-dl-bc" type="button">تنزيل الباركود</button>
+          <button class="r-secbtn" id="bc-print" type="button">طباعة</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- نافذة المسح بالكاميرا -->
+  <div class="modal-overlay r-hidden" id="scan-modal">
+    <div class="modal-box" role="dialog" aria-modal="true" aria-label="مسح الباركود">
+      <div class="modal-head">
+        <span>مسح الباركود / رمز QR</span>
+        <button class="modal-close" id="scan-close" type="button" aria-label="إغلاق"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      </div>
+      <div class="modal-body">
+        <div id="scan-region"></div>
+        <div class="scan-status" id="scan-status">جارٍ تجهيز الكاميرا… وجّه الكاميرا نحو رمز QR الخاص بالتصريح.</div>
+        <div class="scan-hint">إذا لم تعمل الكاميرا، يمكنك رفع صورة رمز QR من الجهاز.</div>
+        <div class="bc-actions">
+          <button class="r-secbtn" id="scan-file-btn" type="button">رفع صورة رمز QR</button>
+          <input class="scan-file" id="scan-file" type="file" accept="image/*">
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <div class="r-foot">
+    <div class="r-fcols">
+      <div><h4>أجير</h4><a href="#">عن أجير</a><a href="#">خدمات أجير</a></div>
+      <div><h4>الدعم</h4><a href="#">الدعم والمساعدة</a><a href="#">الأسئلة الشائعة</a></div>
+      <div><h4>الشروط والخصوصية</h4><a href="#">الشروط والأحكام</a><a href="#">سياسة الخصوصية</a></div>
+      <div><h4>تواصل معنا</h4><a href="#">هاتف الدعم</a><a href="#">قناة تيليجرام</a><a href="#">منصة X</a></div>
+    </div>
+    <div class="r-fl">
+      <img src="https://p16-flow-image-sign.ibyteimg.com/tos-mya-i-uo7y4d541q/09aa4e9999e141b6bbddb6592667e931.png~tplv-0es2k971ck-image.image?rcl=202611221929524F754A151A30F15CB1BD&rk3s=8e244e95&rrcfp=935dee89&x-expires=1795951793&x-signature=3%2BI5AnRCD5GQCX3UMXDobl2hTiY%3D" onerror="this.style.display='none'" alt="">
+      <button type="button" class="r-taka" id="r-taka" title="رفع وإدارة بيانات التصاريح والعاملين">
+        <img src="https://p16-flow-image-sign.ibyteimg.com/tos-mya-i-uo7y4d541q/1d80bdf17f8345469a3534726aa9a562.png~tplv-0es2k971ck-image.image?rcl=202611221929524F754A151A30F15CB1BD&rk3s=8e244e95&rrcfp=935dee89&x-expires=1795951793&x-signature=UH9KNSP%2F1Ed0itkXPaiW85lim5g%3D" onerror="this.style.display='none'" alt="Takamol">
+        <span>رفع وإدارة التصاريح والعاملين</span>
+      </button>
+      <img src="https://p16-flow-image-sign.ibyteimg.com/tos-mya-i-uo7y4d541q/fc51f9c03be548738b6107f35c1ea6be.svg~tplv-0es2k971ck-image.image?rcl=202611221929524F754A151A30F15CB1BD&rk3s=8e244e95&rrcfp=935dee89&x-expires=1795951793&x-signature=tCv2trZRaNQFg91krADFLlxisLw%3D" onerror="this.style.display='none'" alt="Tamkeen Technologies">
+      <img class="govt" src="https://p16-flow-image-sign.ibyteimg.com/tos-mya-i-uo7y4d541q/598e9efb8e0b460fbd4a77570859e9c1.svg~tplv-0es2k971ck-image.image?rcl=202611221929524F754A151A30F15CB1BD&rk3s=8e244e95&rrcfp=935dee89&x-expires=1795951793&x-signature=Z7b9D52RF%2BdRmLvyO5FnW1m3GNo%3D" onerror="this.style.display='none'" alt="هيئة الحكومة الرقمية">
+    </div>
+  </div>
+</div>
+
+<script defer src="https://fastly.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+<script defer src="https://fastly.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+<script defer src="https://fastly.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<script>
+(function(){
+  function $(id){return document.getElementById(id);}
+
+  /* ============ البيانات والتخزين المحلي ============ */
+  var STORE_KEY='ajir_permit_records_v1';
+  var seed=[{permitNo:'TQ6193888',permitType:'تصريح تعاقد أجير',startDate:'2026-07-23',endDate:'2027-01-20',workerName:'MUHAMMAD ZAHID MUHAMMAD MANSHA',workerId:'2521405346',nationality:'باكستاني',occupation:'سائق شاحنة بمقطورة',gender:'ذكر',estNo:'6-4058202',estName:'شركة عقيل طاهر العوى للمقاولات العامة'}];
+  function load(){
+    try{var raw=localStorage.getItem(STORE_KEY);if(raw){var arr=JSON.parse(raw);if(Array.isArray(arr)&&arr.length)return arr;}}catch(e){}
+    return seed.slice();
+  }
+  function save(){try{localStorage.setItem(STORE_KEY,JSON.stringify(records));}catch(e){}}
+  var records=load();
+
+  function today(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+  function st(r){var t=today();if(r.endDate&&t>r.endDate)return 'expired';if(r.startDate&&t<r.startDate)return 'pending';return 'valid';}
+  var M={valid:{h:'ساري / فعال',c:'r-ok',m:'تم التحقق من التصريح بنجاح',icon:'ok'},expired:{h:'منتهي / غير ساري',c:'r-bad',m:'التصريح منتهي الصلاحية',icon:'warn'},pending:{h:'لم يبدأ بعد',c:'r-warn',m:'التصريح لم يبدأ سريانه بعد',icon:'warn'}};
+  var IC={ok:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10" fill="rgba(47,158,100,.12)" stroke="none"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg>',warn:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10" fill="rgba(192,57,43,.10)" stroke="none"/><path d="M12 7v6M12 16h.01"/></svg>'};
+  function val(v){return (v===null||v===undefined||v==='')?'—':v;}
+  function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+  function find(no){no=(no||'').trim().toUpperCase();for(var i=0;i<records.length;i++){if(records[i].permitNo.toUpperCase()===no)return records[i];}return null;}
+
+  /* ============ ترميز البيانات في رمز QR (رابط الصفحة + البيانات) ============ */
+  function asciiSafe(s){return s.replace(/[^\x20-\x7E]/g,function(c){return '\\u'+('0000'+c.charCodeAt(0).toString(16)).slice(-4);});}
+  function recordObject(rec){return {p:'PERMIT',v:1,no:rec.permitNo,type:rec.permitType,sd:rec.startDate,ed:rec.endDate,wn:rec.workerName,wid:rec.workerId,nat:rec.nationality,occ:rec.occupation,g:rec.gender,en:rec.estNo,enm:rec.estName};}
+  function b64uEncode(obj){var json=asciiSafe(JSON.stringify(obj));return btoa(json).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');}
+  function b64uDecode(s){s=s.replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';return JSON.parse(atob(s));}
+  function qrValue(rec){
+    try{
+      var base=location.origin+location.pathname;
+      if(base && base.indexOf('file:')!==0 && base!=='null'){
+        return base+'#p='+b64uEncode(recordObject(rec));
+      }
+    }catch(e){}
+    return asciiSafe(JSON.stringify(recordObject(rec)));
+  }
+  function codeText(rec){var t=(rec.permitNo||'PERMIT').toUpperCase().replace(/[^\x20-\x7E]/g,'').slice(0,40);return t||'PERMIT';}
+  function fromPayload(o){return {permitNo:o.no||'',permitType:o.type||'',startDate:o.sd||'',endDate:o.ed||'',workerName:o.wn||'',workerId:o.wid||'',nationality:o.nat||'',occupation:o.occ||'',gender:o.g||'',estNo:o.en||'',estName:o.enm||''};}
+
+  /* ============ عرض بيانات التصريح والعامل في الصفحة العامة ============ */
+  function fillTables(rec){
+    $('r-permitNo').textContent=val(rec.permitNo);$('r-permitType').textContent=val(rec.permitType);
+    $('r-startDate').textContent=val(rec.startDate);$('r-endDate').textContent=val(rec.endDate);
+    $('r-workerName').textContent=val(rec.workerName);$('r-workerId').textContent=val(rec.workerId);
+    $('r-nationality').textContent=val(rec.nationality);$('r-occupation').textContent=val(rec.occupation);
+    $('r-gender').textContent=val(rec.gender);$('r-birthDate').textContent='—';
+    $('r-estNo').textContent=val(rec.estNo);$('r-estName').textContent=val(rec.estName);
+  }
+  function showEmpty(){
+    var h=$('r-hstatus'),msg=$('r-msg'),tbl=$('r-tables');
+    h.textContent='بانتظار المسح';h.className='r-status r-none';
+    tbl.style.display='none';
+    msg.className='r-msg r-none';
+    msg.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/><path d="M4 12h16"/></svg><span>امسح رمز QR الخاص بالتصريح لعرض بيانات العامل والتصريح على الصفحة.</span>';
+  }
+  function renderRecord(rec,fromScan){
+    var h=$('r-hstatus'),msg=$('r-msg'),tbl=$('r-tables');
+    tbl.style.display='';
+    if(fromScan){
+      h.textContent='بيانات مقروءة من رمز QR';h.className='r-status r-ok';
+      msg.className='r-msg r-ok';
+      msg.innerHTML=IC.ok+'<span>تم عرض بيانات العامل والتصريح المحفوظة عبر الموقع من رمز QR.</span>';
+    }else if(rec.startDate&&rec.endDate){
+      var m=M[st(rec)];h.textContent=m.h;h.className='r-status '+m.c;msg.className='r-msg '+m.c;msg.innerHTML=IC[m.icon]+'<span>'+m.m+'</span>';
+    }else{
+      h.textContent='بيانات من مسح الكود';h.className='r-status r-none';msg.className='r-msg r-none';msg.innerHTML=IC.ok+'<span>تمت قراءة جميع بيانات التصريح من الكود.</span>';
+    }
+    fillTables(rec);
+  }
+  function adoptRecord(rec){
+    if(!rec||!rec.permitNo)return;
+    if(!find(rec.permitNo)){records.push(rec);save();renderList();}
+  }
+
+  function toggle(adm){$('r-public').classList.toggle('r-hidden',adm);$('r-admin').classList.toggle('r-hidden',!adm);window.scrollTo({top:0,behavior:'smooth'});}
+  $('r-taka').addEventListener('click',function(){toggle(true);});
+  $('r-back').addEventListener('click',function(){toggle(false);if(records.length)renderRecord(records[0],false);else showEmpty();});
+
+  /* ============ قائمة التصاريح ============ */
+  function pill(r){var s=st(r);if(s==='valid')return '<span class="r-pill">ساري / فعال</span>';if(s==='expired')return '<span class="r-pill bad">منتهي</span>';return '<span class="r-pill warn">لم يبدأ</span>';}
+  var bcIcon='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6v12M7 6v12M9.5 6v12M12 6v12M15 6v12M17.5 6v12M20 6v12"/></svg>';
+  function renderList(){
+    var tb=$('r-list');var html='';
+    records.forEach(function(r){
+      html+='<tr><td dir="ltr">'+esc(r.permitNo)+'</td><td>'+esc(r.workerName)+'</td><td>'+esc(r.estName||'—')+'</td><td dir="ltr">'+esc(r.startDate||'—')+'</td><td dir="ltr">'+esc(r.endDate||'—')+'</td><td>'+pill(r)+'</td>'
+        +'<td><button class="r-bcbtn" type="button" data-act="bc" data-id="'+esc(r.permitNo)+'">'+bcIcon+'باركود</button></td>'
+        +'<td><button class="r-del" type="button" data-act="del" data-id="'+esc(r.permitNo)+'">حذف</button></td></tr>';
+    });
+    tb.innerHTML=html;
+  }
+  $('r-list').addEventListener('click',function(e){
+    var b=e.target.closest('button[data-act]');if(!b)return;
+    var id=b.getAttribute('data-id').toUpperCase(),act=b.getAttribute('data-act');
+    if(act==='del'){records=records.filter(function(x){return x.permitNo.toUpperCase()!==id;});save();renderList();if(records.length)renderRecord(records[0],false);else showEmpty();}
+    else{var r=find(id);if(r)openBarcode(r);}
+  });
+
+  /* ============ نموذج الرفع: حفظ البيانات وتوليد رمز QR ============ */
+  $('r-form').addEventListener('submit',function(e){
+    e.preventDefault();
+    var rec={permitNo:$('a-permitNo').value.trim(),permitType:$('a-permitType').value,startDate:$('a-startDate').value,endDate:$('a-endDate').value,workerName:$('a-workerName').value.trim(),workerId:$('a-workerId').value.trim(),nationality:$('a-nationality').value,occupation:$('a-occupation').value,gender:$('a-gender').value,estNo:$('a-estNo').value.trim(),estName:$('a-estName').value.trim()};
+    if(!rec.permitNo||!rec.workerName||!rec.workerId||!rec.startDate||!rec.endDate){var a=$('r-alert');a.style.display='block';a.className='r-alert';a.style.color='#c0392b';a.style.background='rgba(192,57,43,.10)';a.textContent='يرجى تعبئة الحقول المطلوبة (رقم التصريح، اسم العامل، رقم الهوية، تاريخ البداية والنهاية).';return;}
+    records=records.filter(function(x){return x.permitNo.toUpperCase()!==rec.permitNo.toUpperCase();});
+    records.push(rec);save();renderList();this.reset();
+    var ok=$('r-alert');ok.style.display='block';ok.className='r-alert';ok.style.color='#1f7d4c';ok.style.background='rgba(47,158,100,.12)';ok.textContent='تم حفظ بيانات العامل والتصريح '+rec.permitNo+' وتوليد رمز QR الخاص به بنجاح.';
+    setTimeout(function(){ok.style.display='none';},3200);
+    openBarcode(rec);
+  });
+
+  /* ============ نافذة الباركود (QR يفتح الصفحة بالبيانات + Code128 + البيانات كاملة) ============ */
+  var bcRec=null;
+  function fillSummary(rec){
+    $('s-permitNo').textContent=val(rec.permitNo);$('s-permitType').textContent=val(rec.permitType);
+    $('s-startDate').textContent=val(rec.startDate);$('s-endDate').textContent=val(rec.endDate);
+    $('s-workerName').textContent=val(rec.workerName);$('s-workerId').textContent=val(rec.workerId);
+    $('s-nationality').textContent=val(rec.nationality);$('s-occupation').textContent=val(rec.occupation);
+    $('s-gender').textContent=val(rec.gender);$('s-estNo').textContent=val(rec.estNo);
+    $('s-estName').textContent=val(rec.estName);
+  }
+  function openBarcode(rec){
+    bcRec=rec;
+    $('bc-title').textContent='باركود التصريح — '+val(rec.permitNo);
+    var qrEl=$('qr-code');qrEl.innerHTML='';
+    if(window.qrcode){try{
+      if(qrcode.stringToBytesFuncs&&qrcode.stringToBytesFuncs['UTF-8'])qrcode.stringToBytes=qrcode.stringToBytesFuncs['UTF-8'];
+      var qr=qrcode(0,'M');qr.addData(qrValue(rec));qr.make();
+      qrEl.innerHTML=qr.createSvgTag(4,6);
+    }catch(e){}}
+    if(window.JsBarcode){try{JsBarcode('#bc-barcode',codeText(rec),{format:'CODE128',width:2,height:66,fontSize:14,displayValue:true,margin:6,background:'#ffffff',lineColor:'#1c2430'});}catch(e){}}
+    fillSummary(rec);
+    $('bc-modal').classList.remove('r-hidden');
+  }
+  function closeBarcode(){$('bc-modal').classList.add('r-hidden');}
+  $('bc-close').addEventListener('click',closeBarcode);
+  $('bc-modal').addEventListener('click',function(e){if(e.target===this)closeBarcode();});
+  function downloadBlob(blob,name){var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},400);}
+  function svgToPng(svg,name){
+    var xml=new XMLSerializer().serializeToString(svg);
+    var img=new Image();
+    img.onload=function(){
+      var vb=svg.viewBox&&svg.viewBox.baseVal;
+      var ratio=(vb&&vb.width&&vb.height)?vb.width/vb.height:(svg.getBoundingClientRect&&svg.getBoundingClientRect().width/svg.getBoundingClientRect().height)||2;
+      var W=600,H=Math.max(180,Math.round(W/Math.max(ratio,0.6)));
+      var c=document.createElement('canvas');c.width=W;c.height=H;var ctx=c.getContext('2d');
+      ctx.fillStyle='#ffffff';ctx.fillRect(0,0,W,H);
+      var pad=20;var r=Math.min((W-pad*2)/Math.max(img.naturalWidth||1,1),(H-pad*2)/Math.max(img.naturalHeight||1,1));
+      var dw=(img.naturalWidth||W)*r,dh=(img.naturalHeight||H)*r;
+      ctx.drawImage(img,(W-dw)/2,(H-dh)/2,dw,dh);
+      c.toBlob(function(b){if(b)downloadBlob(b,name);});
+    };
+    img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(xml);
+  }
+  $('bc-dl-qr').addEventListener('click',function(){
+    var svg=$('qr-code').querySelector('svg');if(!svg||!bcRec)return;
+    svgToPng(svg,'QR-'+codeText(bcRec)+'.png');
+  });
+  $('bc-dl-bc').addEventListener('click',function(){
+    var svg=$('bc-barcode');if(!svg||!bcRec)return;
+    svgToPng(svg,'barcode-'+codeText(bcRec)+'.png');
+  });
+  $('bc-print').addEventListener('click',function(){window.print();});
+
+  /* ============ المسح بالكاميرا (يدعم رابط QR وبيانات QR القديمة ورقم التصريح) ============ */
+  var scanner=null;
+  function onDecoded(text){if(!scanner||!scanner.isScanning())return;closeScan();handleScan(text);}
+  function openScan(){
+    $('scan-modal').classList.remove('r-hidden');
+    var stEl=$('scan-status');stEl.className='scan-status';stEl.textContent='جارٍ تجهيز الكاميرا… وجّه الكاميرا نحو رمز QR الخاص بالتصريح.';
+    if(typeof Html5Qrcode==='undefined'){stEl.className='scan-status err';stEl.textContent='تعذر تحميل مكتبة المسح. استخدم زر رفع صورة رمز QR أدناه.';return;}
+    if(scanner&&scanner.isScanning())return;
+    try{scanner=new Html5Qrcode('scan-region',{verbose:false});}catch(e){scanner=null;}
+    if(!scanner){stEl.className='scan-status err';stEl.textContent='تعذر بدء أداة المسح. جرّب رفع صورة رمز QR.';return;}
+    var formats=[Html5QrcodeSupportedFormats.QR_CODE,Html5QrcodeSupportedFormats.CODE_128];
+    scanner.start({facingMode:'environment'},{fps:10,qrbox:{width:230,height:230},formatsToSupport:formats},onDecoded,function(){}).catch(function(err){
+      stEl.className='scan-status err';stEl.textContent='تعذر تشغيل الكاميرا (تحقق من إذن الوصول). يمكنك رفع صورة رمز QR بدلًا منها.';
+    });
+  }
+  function closeScan(){
+    if(scanner&&scanner.isScanning()){scanner.stop().then(function(){try{scanner.clear();}catch(e){}}).catch(function(){});}
+    $('scan-modal').classList.add('r-hidden');
+  }
+  function decodePayload(text){
+    text=(text||'').trim();if(!text)return null;
+    var rec=null;
+    var hi=text.indexOf('#p=');
+    if(hi>=0){try{var o=b64uDecode(text.slice(hi+3));if(o&&o.p==='PERMIT')rec=fromPayload(o);}catch(e){}}
+    if(!rec){try{var o=JSON.parse(text);if(o&&o.p==='PERMIT')rec=fromPayload(o);}catch(e){}}
+    if(!rec)rec=find(text);
+    if(!rec){var alt=text.replace(/^PERMIT:/i,'').trim();if(alt&&alt!==text)rec=find(alt);}
+    return rec;
+  }
+  function handleScan(text){
+    var rec=decodePayload(text);
+    if(rec){adoptRecord(rec);$('scan-modal').classList.add('r-hidden');toggle(false);renderRecord(rec,true);return;}
+    var stEl=$('scan-status');stEl.className='scan-status err';stEl.textContent='لم يتم العثور على بيانات لهذا الرمز: '+text;
+  }
+  $('r-scan').addEventListener('click',openScan);
+  $('scan-close').addEventListener('click',closeScan);
+  $('scan-modal').addEventListener('click',function(e){if(e.target===this)closeScan();});
+  $('scan-file-btn').addEventListener('click',function(){$('scan-file').click();});
+  $('scan-file').addEventListener('change',function(){
+    var f=this.files&&this.files[0];if(!f)return;
+    if(typeof Html5Qrcode==='undefined'){$('scan-status').className='scan-status err';$('scan-status').textContent='مكتبة المسح غير متاحة حاليًا.';return;}
+    if(!scanner){try{scanner=new Html5Qrcode('scan-region',{verbose:false});}catch(e){scanner=null;}}
+    if(!scanner)return;
+    scanner.scanFile(f,true).then(function(text){closeScan();handleScan(text);}).catch(function(){$('scan-status').className='scan-status err';$('scan-status').textContent='تعذرت قراءة الصورة؛ جرّب صورة أوضح ومقربة لرمز QR.';});
+    this.value='';
+  });
+
+  /* ============ المساعد (الدردشة) ============ */
+  var panel=$('chat-panel');
+  document.querySelector('.r-fab').addEventListener('click',function(){panel.classList.toggle('r-hidden');});
+  $('chat-close').addEventListener('click',function(){panel.classList.add('r-hidden');});
+  $('chat-min').addEventListener('click',function(){panel.classList.add('r-hidden');});
+  $('chat-home').addEventListener('click',function(){panel.classList.add('r-hidden');toggle(false);if(records.length)renderRecord(records[0],false);else showEmpty();});
+  var body=$('chat-body'),qcards=$('qcards'),typing=$('typing');
+  function nowT(){var d=new Date();return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');}
+  function addMsg(text,who){
+    var row=document.createElement('div');row.className='msg-row';
+    var b=document.createElement('div');b.className=who==='user'?'user-bubble':'bot-bubble';b.textContent=text;
+    var t=document.createElement('div');t.className='msg-time';t.textContent=who==='user'?nowT():nowT()+' -bot';
+    row.appendChild(b);row.appendChild(t);body.insertBefore(row,qcards);body.scrollTop=body.scrollHeight;
+  }
+  function botReply(text){typing.style.display='flex';setTimeout(function(){typing.style.display='none';addMsg(text,'bot');},750);}
+  var ci=$('chat-input');
+  function send(){var v=ci.value.trim();if(!v)return;addMsg(v,'user');ci.value='';botReply('شكرًا لتواصلك مع مساعد أجير. سيتواصل معك فريق الدعم قريبًا، ويمكنك اختيار إحدى الخدمات أدناه.');}
+  $('chat-send').addEventListener('click',send);
+  ci.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();send();}});
+  Array.prototype.forEach.call(document.querySelectorAll('.qcard'),function(c){c.addEventListener('click',function(){botReply('اخترت: '+c.getAttribute('data-label')+'. سيتم تحويلك إلى الخدمة المناسبة.');});});
+
+  /* ============ الإقلاع: قراءة البيانات من رابط QR (#p=) أو ?q= ثم عرضها ============ */
+  renderList();
+  (function boot(){
+    var rec=null;
+    var m=location.hash.match(/#p=([A-Za-z0-9\-_]+)/);
+    if(m){try{var o=b64uDecode(m[1]);if(o&&o.p==='PERMIT')rec=fromPayload(o);}catch(e){}}
+    if(!rec){var q=new URLSearchParams(location.search).get('q');if(q)rec=find(q);}
+    if(rec){adoptRecord(rec);renderRecord(rec,true);return;}
+    if(records.length){renderRecord(records[0],false);return;}
+    showEmpty();
+  })();
+})();
+</script>
+</body>
+</html>
